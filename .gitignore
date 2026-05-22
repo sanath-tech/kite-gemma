@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.out
+*.err
+*.log
+.DS_Store
+
+# Large/generated experiment artifacts should live outside the repo.
+outputs/
+*_submission.jsonl
+*_submission_with_reasoning.jsonl
+*.png

@@ -1,0 +1,41 @@
+{
+  "default_experiment": "geometry_actions_bicycle",
+  "experiments": {
+    "direct_waypoints_egohistory": {
+      "description": "Gemma sees front3 last4 images plus full ego history and directly predicts 25 future xy waypoints.",
+      "prompt_mode": "direct_waypoints",
+      "motion_context": false,
+      "ego_history": true,
+      "rollout": "direct",
+      "max_new_tokens": 1200,
+      "output_name": "kitscenes_test_ablation_direct_waypoints_egohistory"
+    },
+    "direct_waypoints_motion": {
+      "description": "Gemma sees front3 last4 images plus Savitzky-Golay speed/heading and directly predicts 25 future xy waypoints.",
+      "prompt_mode": "direct_waypoints",
+      "motion_context": true,
+      "ego_history": false,
+      "rollout": "direct",
+      "max_new_tokens": 1200,
+      "output_name": "kitscenes_test_ablation_direct_waypoints_motion"
+    },
+    "language_actions_bicycle": {
+      "description": "Gemma sees front3 last4 images plus Savitzky-Golay speed/heading, outputs language acceleration/steering actions, then a plain bicycle rollout creates waypoints.",
+      "prompt_mode": "reasoning",
+      "motion_context": true,
+      "ego_history": false,
+      "rollout": "bestkin",
+      "max_new_tokens": 450,
+      "output_name": "kitscenes_test_ablation_language_actions_bicycle"
+    },
+    "geometry_actions_bicycle": {
+      "description": "Gemma sees front3 last4 images plus Savitzky-Golay speed/heading, outputs lane geometry plus language actions, then a geometry-aware bicycle rollout creates waypoints.",
+      "prompt_mode": "geometry_reasoning",
+      "motion_context": true,
+      "ego_history": false,
+      "rollout": "allsteer_bestkin",
+      "max_new_tokens": 600,
+      "output_name": "kitscenes_test_ablation_geometry_actions_bicycle"
+    }
+  }
+}
