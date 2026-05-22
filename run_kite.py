@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""Config-driven KITScenes front3-last4 ablation runner.
+"""Config-driven KITE runner for KITScenes front3-last4 methods.
 
-The four ablations differ only in prompt/output mode and rollout:
+The methods differ only in prompt/output mode and rollout:
 1. direct waypoints from images + ego history
-2. direct waypoints from images + SavGol speed/heading
-3. language actions from images + SavGol speed/heading, plain bicycle rollout
-4. geometry language actions from images + SavGol speed/heading, geometry-aware bicycle rollout
+2. language actions from images + SavGol speed/heading, plain bicycle rollout
+3. geometry language actions from images + SavGol speed/heading, geometry-aware bicycle rollout
 """
 
 from __future__ import annotations
@@ -32,7 +31,7 @@ if "--list-experiments" not in sys.argv:
 
     from evaluate_kitscenes_gemma_geometry_allsteer_kinematic import (  # noqa: E402
         geometry_from_parse,
-        rollout_bicycle as rollout_allsteer,
+        rollout_bicycle as rollout_geometry_aware,
     )
     from evaluate_kitscenes_gemma_reasoning_kinematic import (  # noqa: E402
         HIGH_SPEED_STEER_SCALE,
@@ -98,34 +97,25 @@ DEFAULT_CONFIG: dict[str, Any] = {
             "ego_history": True,
             "rollout": "direct",
             "max_new_tokens": 1200,
-            "output_name": "kitscenes_test_ablation_direct_waypoints_egohistory",
-        },
-        "direct_waypoints_motion": {
-            "description": "Gemma sees front3 last4 images plus Savitzky-Golay speed/heading and directly predicts 25 future xy waypoints.",
-            "prompt_mode": "direct_waypoints",
-            "motion_context": True,
-            "ego_history": False,
-            "rollout": "direct",
-            "max_new_tokens": 1200,
-            "output_name": "kitscenes_test_ablation_direct_waypoints_motion",
+            "output_name": "kitscenes_test_kite_direct_waypoints_egohistory",
         },
         "language_actions_bicycle": {
             "description": "Gemma sees front3 last4 images plus Savitzky-Golay speed/heading, outputs language acceleration/steering actions, then a plain bicycle rollout creates waypoints.",
             "prompt_mode": "reasoning",
             "motion_context": True,
             "ego_history": False,
-            "rollout": "bestkin",
+            "rollout": "plain_bicycle",
             "max_new_tokens": 450,
-            "output_name": "kitscenes_test_ablation_language_actions_bicycle",
+            "output_name": "kitscenes_test_kite_language_actions_bicycle",
         },
         "geometry_actions_bicycle": {
             "description": "Gemma sees front3 last4 images plus Savitzky-Golay speed/heading, outputs lane geometry plus language actions, then a geometry-aware bicycle rollout creates waypoints.",
             "prompt_mode": "geometry_reasoning",
             "motion_context": True,
             "ego_history": False,
-            "rollout": "allsteer_bestkin",
+            "rollout": "geometry_aware_bicycle",
             "max_new_tokens": 600,
-            "output_name": "kitscenes_test_ablation_geometry_actions_bicycle",
+            "output_name": "kitscenes_test_kite_geometry_actions_bicycle",
         },
     },
 }
@@ -418,7 +408,7 @@ def apply_rollout(raw_output: str, experiment: dict[str, Any], past_xy: np.ndarr
         }
 
     parsed = extract_json_object(raw_output)
-    if rollout_mode == "bestkin":
+    if rollout_mode == "plain_bicycle":
         english = normalize_english(parsed, REASONING_KEYS)
         actions = actions_from_reasoning(english)
         pred_xy, controls, initial_state = rollout_plain(past_xy, actions)
@@ -432,12 +422,12 @@ def apply_rollout(raw_output: str, experiment: dict[str, Any], past_xy: np.ndarr
             "initial_state": initial_state,
         }
 
-    if rollout_mode == "allsteer_bestkin":
+    if rollout_mode == "geometry_aware_bicycle":
         english = normalize_english(parsed, GEOMETRY_REASONING_KEYS)
         actions = actions_from_reasoning(english)
         gemma_parse = {"parsed": parsed, "english": english}
         geometry = geometry_from_parse(gemma_parse)
-        pred_xy, controls, initial_state = rollout_allsteer(past_xy, actions, geometry)
+        pred_xy, controls, initial_state = rollout_geometry_aware(past_xy, actions, geometry)
         return {
             "pred_xy": pred_xy.tolist(),
             "parsed_output": parsed,
