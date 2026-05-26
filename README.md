@@ -173,12 +173,6 @@ The local KITE run completed all 400 KITScenes test samples for the main method 
 | Baseline 1 | Kinematic | `language_actions_bicycle` | 400 | language actions plus plain bicycle rollout |
 | Baseline 2 | Gemma 4 vanilla model | `direct_waypoints_egohistory` | 400 | direct waypoint prediction |
 
-The final geometry-aware submission artifact is:
-
-```text
-outputs/kitscenes_test_front3_last4_geometry_allsteer_savgol_reasoning_geomkin_submission_final_with_reasoning.jsonl
-```
-
 ## Quick Start
 
 Install Python dependencies:
@@ -199,29 +193,6 @@ Run Kinematics V2 / KITE:
 python3 run_kite.py \
   --config config.json \
   --experiment geometry_actions_bicycle \
-  --model-root /path/to/gemma-4-31B-it \
-  --parquet /path/to/kitscenes-data/data/test-00000-of-00001.parquet \
-  --output-root outputs/kite \
-  --limit 400
-```
-
-Run Kinematics V2 / KITE followed by Kinematic and Gemma 4 vanilla model:
-
-```bash
-python3 run_all_kite.py \
-  --config config.json \
-  --model-root /path/to/gemma-4-31B-it \
-  --parquet /path/to/kitscenes-data/data/test-00000-of-00001.parquet \
-  --output-root outputs/kite \
-  --limit 400
-```
-
-Run only Kinematic and Gemma 4 vanilla model:
-
-```bash
-python3 run_all_kite.py \
-  --config config.json \
-  --experiments language_actions_bicycle direct_waypoints_egohistory \
   --model-root /path/to/gemma-4-31B-it \
   --parquet /path/to/kitscenes-data/data/test-00000-of-00001.parquet \
   --output-root outputs/kite \
@@ -254,17 +225,3 @@ python3 plot_three_method_camera_trajectories.py \
 ```
 
 The plot script overlays Gemma 4 vanilla model, Kinematic, and Kinematics V2 / KITE. It also writes the driving instruction and Gemma language output into the figure.
-
-## Method Note
-
-A PDF version of the method description is included at:
-
-```text
-docs/KITE_Method.pdf
-```
-
-Regenerate it with:
-
-```bash
-python3 scripts/make_method_pdf.py
-```
