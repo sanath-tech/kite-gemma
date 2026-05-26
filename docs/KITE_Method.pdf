@@ -16,7 +16,7 @@ endobj
 << /Type /Font /Subtype /Type1 /BaseFont /Courier >>
 endobj
 6 0 obj
-<< /Length 3145 >>
+<< /Length 3258 >>
 stream
 BT /F2 20 Tf 54.0 734.0 Td (KITE Method) Tj ET
 BT /F1 10 Tf 54.0 694.9 Td (KITE stands for Kinematic Interpretable Trajectory Estimation. The method uses a vision-) Tj ET
@@ -41,18 +41,18 @@ BT /F1 10 Tf 54.0 364.1 Td (- whether to maintain speed, accelerate, or decelera
 BT /F1 10 Tf 54.0 351.1 Td (- whether to steer left, steer right, or continue along the lane) Tj ET
 BT /F1 10 Tf 54.0 329.0 Td (The numeric trajectory is then produced by deterministic kinematics. This separates semantic) Tj ET
 BT /F1 10 Tf 54.0 316.0 Td (reasoning from physical motion generation.) Tj ET
-BT /F2 14 Tf 54.0 288.9 Td (Compared Methods) Tj ET
-BT /F1 10 Tf 54.0 259.8 Td (KITE includes three methods.) Tj ET
-BT /F1 10 Tf 54.0 237.7 Td (1. Direct waypoints with ego history) Tj ET
-BT /F1 10 Tf 54.0 215.6 Td (  Gemma receives front-camera image history, the route instruction, and the past ego) Tj ET
-BT /F1 10 Tf 54.0 202.6 Td (  trajectory as text. It directly predicts 25 future x-y waypoints. No kinematic model is) Tj ET
-BT /F1 10 Tf 54.0 189.6 Td (  used.) Tj ET
-BT /F1 10 Tf 54.0 167.5 Td (2. Language actions with bicycle rollout) Tj ET
-BT /F1 10 Tf 54.0 145.4 Td (  Gemma receives front-camera image history, the route instruction, and current speed and) Tj ET
-BT /F1 10 Tf 54.0 132.4 Td (  heading from a Savitzky-Golay filter. It predicts acceleration and steering language for) Tj ET
-BT /F1 10 Tf 54.0 119.4 Td (  two time windows: the first 3 seconds and the last 2 seconds. A plain bicycle model) Tj ET
-BT /F1 10 Tf 54.0 106.4 Td (  converts those labels into waypoints.) Tj ET
-BT /F1 10 Tf 54.0 84.3 Td (3. Geometry actions with bicycle rollout) Tj ET
+BT /F2 14 Tf 54.0 288.9 Td (Main Method And Baselines) Tj ET
+BT /F1 10 Tf 54.0 259.8 Td (KITE includes one main method and two baselines.) Tj ET
+BT /F1 10 Tf 54.0 237.7 Td (1. Main KITE method: geometry actions with bicycle rollout) Tj ET
+BT /F1 10 Tf 54.0 215.6 Td (  This is the recommended method and the one with the best result in this repo. Gemma) Tj ET
+BT /F1 10 Tf 54.0 202.6 Td (  predicts both driving actions and lane geometry. The geometry is converted into a small) Tj ET
+BT /F1 10 Tf 54.0 189.6 Td (  lane-following steering bias, so "steer straight" can still follow a curved road.) Tj ET
+BT /F1 10 Tf 54.0 167.5 Td (2. Baseline 1: direct waypoints with ego history) Tj ET
+BT /F1 10 Tf 54.0 145.4 Td (  Gemma receives front-camera image history, the route instruction, and the past ego) Tj ET
+BT /F1 10 Tf 54.0 132.4 Td (  trajectory as text. It directly predicts 25 future x-y waypoints. No kinematic model is) Tj ET
+BT /F1 10 Tf 54.0 119.4 Td (  used.) Tj ET
+BT /F1 10 Tf 54.0 97.3 Td (3. Baseline 2: language actions with bicycle rollout) Tj ET
+BT /F1 10 Tf 54.0 75.2 Td (  Gemma receives front-camera image history, the route instruction, and current speed and) Tj ET
 BT /F1 8 Tf 54.0 28.0 Td (KITE Method | 1) Tj ET
 endstream
 endobj
@@ -60,11 +60,11 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 6 0 R >>
 endobj
 8 0 obj
-<< /Length 3373 >>
+<< /Length 3371 >>
 stream
-BT /F1 10 Tf 54.0 734.0 Td (  This is the recommended KITE method. Gemma predicts both driving actions and lane) Tj ET
-BT /F1 10 Tf 54.0 721.0 Td (  geometry. The geometry is converted into a small lane-following steering bias, so "steer) Tj ET
-BT /F1 10 Tf 54.0 708.0 Td (  straight" can still follow a curved road.) Tj ET
+BT /F1 10 Tf 54.0 734.0 Td (  heading from a Savitzky-Golay filter. It predicts acceleration and steering language for) Tj ET
+BT /F1 10 Tf 54.0 721.0 Td (  two time windows: the first 3 seconds and the last 2 seconds. A plain bicycle model) Tj ET
+BT /F1 10 Tf 54.0 708.0 Td (  converts those labels into waypoints.) Tj ET
 BT /F2 14 Tf 54.0 680.9 Td (Gemma Output For The Recommended Method) Tj ET
 BT /F1 10 Tf 54.0 651.8 Td (The geometry-aware method asks Gemma to return JSON with an english object:) Tj ET
 BT /F3 8 Tf 68.0 629.7 Td ({) Tj ET
@@ -112,7 +112,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 8 0 R >>
 endobj
 10 0 obj
-<< /Length 3275 >>
+<< /Length 3332 >>
 stream
 BT /F1 10 Tf 54.0 734.0 Td (- right curve: negative steering bias) Tj ET
 BT /F1 10 Tf 54.0 721.0 Td (- straight: zero or very small steering bias) Tj ET
@@ -141,12 +141,12 @@ BT /F3 8 Tf 68.0 358.0 Td (x_{t+1} = x_t + v_{t+1} cos\(theta_{t+1}\) dt) Tj ET
 BT /F3 8 Tf 68.0 347.0 Td (y_{t+1} = y_t + v_{t+1} sin\(theta_{t+1}\) dt) Tj ET
 BT /F1 10 Tf 54.0 326.9 Td (The final output is a 25-point local ego-frame trajectory.) Tj ET
 BT /F2 14 Tf 54.0 299.8 Td (Current Test Artifacts) Tj ET
-BT /F1 10 Tf 54.0 270.7 Td (The local three-method KITE run completed all 400 KITScenes test samples for each active) Tj ET
-BT /F1 10 Tf 54.0 257.7 Td (method.) Tj ET
-BT /F3 8 Tf 54.0 235.6 Td (Method | Rows | Output) Tj ET
-BT /F3 8 Tf 54.0 224.6 Td (direct_waypoints_egohistory | 400 | direct waypoint baseline) Tj ET
-BT /F3 8 Tf 54.0 213.6 Td (language_actions_bicycle | 400 | language actions plus plain bicycle rollout) Tj ET
-BT /F3 8 Tf 54.0 202.6 Td (geometry_actions_bicycle | 400 | KITE geometry-aware bicycle rollout) Tj ET
+BT /F1 10 Tf 54.0 270.7 Td (The local KITE run completed all 400 KITScenes test samples for the main method and both) Tj ET
+BT /F1 10 Tf 54.0 257.7 Td (baselines.) Tj ET
+BT /F3 8 Tf 54.0 235.6 Td (Role | Method | Rows | Output) Tj ET
+BT /F3 8 Tf 54.0 224.6 Td (Main KITE method | geometry_actions_bicycle | 400 | KITE geometry-aware bicycle rollout) Tj ET
+BT /F3 8 Tf 54.0 213.6 Td (Baseline 1 | direct_waypoints_egohistory | 400 | direct waypoint prediction) Tj ET
+BT /F3 8 Tf 54.0 202.6 Td (Baseline 2 | language_actions_bicycle | 400 | language actions plus plain bicycle rollout) Tj ET
 BT /F1 10 Tf 54.0 182.5 Td (The final geometry-aware submission artifact is:) Tj ET
 BT /F3 8 Tf 68.0 160.4 Td (outputs/kitscenes_test_front3_last4_geometry_allsteer_savgol_reasoning_geomkin_submission_final_with) Tj ET
 BT /F2 14 Tf 54.0 135.3 Td (Why This Helps) Tj ET
@@ -161,7 +161,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 10 0 R >>
 endobj
 12 0 obj
-<< /Title (KITE Method) /Author (KITE) /CreationDate (D:20260522131454) >>
+<< /Title (KITE Method) /Author (KITE) /CreationDate (D:20260526103211) >>
 endobj
 xref
 0 13
@@ -172,14 +172,14 @@ xref
 0000000204 00000 n 
 0000000279 00000 n 
 0000000347 00000 n 
-0000003544 00000 n 
-0000003690 00000 n 
-0000007115 00000 n 
-0000007261 00000 n 
-0000010589 00000 n 
-0000010737 00000 n 
+0000003657 00000 n 
+0000003803 00000 n 
+0000007226 00000 n 
+0000007372 00000 n 
+0000010757 00000 n 
+0000010905 00000 n 
 trailer
 << /Size 13 /Root 1 0 R /Info 12 0 R >>
 startxref
-10828
+10996
 %%EOF

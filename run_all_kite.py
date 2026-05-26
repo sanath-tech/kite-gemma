@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run every KITE experiment from config.json with the local Python runner."""
+"""Run the KITE main method and optional baselines from config.json."""
 
 from __future__ import annotations
 
@@ -19,11 +19,20 @@ def load_experiment_names(config_path: Path, selected: list[str] | None) -> list
             choices = ", ".join(sorted(experiments))
             raise ValueError(f"Unknown experiment(s): {', '.join(missing)}. Choices: {choices}")
         return selected
-    return list(experiments)
+    main_method = config.get("main_method") or config.get("default_experiment")
+    baselines = config.get("baseline_methods", [])
+    ordered = []
+    for name in [main_method, *baselines]:
+        if name in experiments and name not in ordered:
+            ordered.append(name)
+    for name in experiments:
+        if name not in ordered:
+            ordered.append(name)
+    return ordered
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run one or more KITE experiments sequentially.")
+    parser = argparse.ArgumentParser(description="Run the KITE main method and optional baselines sequentially.")
     parser.add_argument("--config", type=Path, default=Path("config.json"))
     parser.add_argument("--model-root", type=Path, required=True)
     parser.add_argument("--parquet", type=Path, required=True)
@@ -35,7 +44,7 @@ def main() -> None:
         "--experiments",
         nargs="+",
         default=None,
-        help="Optional subset of experiment names. Defaults to every experiment in the config.",
+        help="Optional subset of method names. Defaults to the main KITE method followed by baselines.",
     )
     args = parser.parse_args()
 
@@ -65,7 +74,7 @@ def main() -> None:
             cmd.extend(["--max-new-tokens", str(args.max_new_tokens)])
 
         print("=" * 72, flush=True)
-        print(f"Running KITE experiment: {experiment_name}", flush=True)
+        print(f"Running KITE method: {experiment_name}", flush=True)
         print("=" * 72, flush=True)
         subprocess.run(cmd, check=True)
 

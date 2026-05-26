@@ -88,9 +88,15 @@ GEOMETRY_REASONING_KEYS = (
 )
 
 DEFAULT_CONFIG: dict[str, Any] = {
+    "main_method": "geometry_actions_bicycle",
+    "baseline_methods": [
+        "direct_waypoints_egohistory",
+        "language_actions_bicycle",
+    ],
     "default_experiment": "geometry_actions_bicycle",
     "experiments": {
         "direct_waypoints_egohistory": {
+            "role": "baseline",
             "description": "Gemma sees front3 last4 images plus full ego history and directly predicts 25 future xy waypoints.",
             "prompt_mode": "direct_waypoints",
             "motion_context": False,
@@ -100,6 +106,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
             "output_name": "kitscenes_test_kite_direct_waypoints_egohistory",
         },
         "language_actions_bicycle": {
+            "role": "baseline",
             "description": "Gemma sees front3 last4 images plus Savitzky-Golay speed/heading, outputs language acceleration/steering actions, then a plain bicycle rollout creates waypoints.",
             "prompt_mode": "reasoning",
             "motion_context": True,
@@ -109,6 +116,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
             "output_name": "kitscenes_test_kite_language_actions_bicycle",
         },
         "geometry_actions_bicycle": {
+            "role": "main_method",
             "description": "Gemma sees front3 last4 images plus Savitzky-Golay speed/heading, outputs lane geometry plus language actions, then a geometry-aware bicycle rollout creates waypoints.",
             "prompt_mode": "geometry_reasoning",
             "motion_context": True,
@@ -538,7 +546,8 @@ def main() -> None:
     if args.list_experiments:
         for name, item in full_config["experiments"].items():
             default_marker = " (default)" if name == full_config.get("default_experiment") else ""
-            print(f"{name}{default_marker}: {item.get('description', '')}")
+            role = item.get("role", "method")
+            print(f"{name}{default_marker} [{role}]: {item.get('description', '')}")
         return
     if args.model_root is None:
         raise ValueError("--model-root is required unless --list-experiments is used")

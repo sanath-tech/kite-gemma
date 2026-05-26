@@ -28,21 +28,21 @@ Directly asking Gemma for numeric waypoints is possible, but raw coordinates are
 
 The numeric trajectory is then produced by deterministic kinematics. This separates semantic reasoning from physical motion generation.
 
-## Compared Methods
+## Main Method And Baselines
 
-KITE includes three methods.
+KITE includes one main method and two baselines.
 
-1. Direct waypoints with ego history
+1. Main KITE method: geometry actions with bicycle rollout
+
+   This is the recommended method and the one with the best result in this repo. Gemma predicts both driving actions and lane geometry. The geometry is converted into a small lane-following steering bias, so "steer straight" can still follow a curved road.
+
+2. Baseline 1: direct waypoints with ego history
 
    Gemma receives front-camera image history, the route instruction, and the past ego trajectory as text. It directly predicts 25 future x-y waypoints. No kinematic model is used.
 
-2. Language actions with bicycle rollout
+3. Baseline 2: language actions with bicycle rollout
 
    Gemma receives front-camera image history, the route instruction, and current speed and heading from a Savitzky-Golay filter. It predicts acceleration and steering language for two time windows: the first 3 seconds and the last 2 seconds. A plain bicycle model converts those labels into waypoints.
-
-3. Geometry actions with bicycle rollout
-
-   This is the recommended KITE method. Gemma predicts both driving actions and lane geometry. The geometry is converted into a small lane-following steering bias, so "steer straight" can still follow a curved road.
 
 ## Gemma Output For The Recommended Method
 
@@ -147,13 +147,13 @@ The final output is a 25-point local ego-frame trajectory.
 
 ## Current Test Artifacts
 
-The local three-method KITE run completed all 400 KITScenes test samples for each active method.
+The local KITE run completed all 400 KITScenes test samples for the main method and both baselines.
 
-| Method | Rows | Output |
-| --- | ---: | --- |
-| direct_waypoints_egohistory | 400 | direct waypoint baseline |
-| language_actions_bicycle | 400 | language actions plus plain bicycle rollout |
-| geometry_actions_bicycle | 400 | KITE geometry-aware bicycle rollout |
+| Role | Method | Rows | Output |
+| --- | --- | ---: | --- |
+| Main KITE method | geometry_actions_bicycle | 400 | KITE geometry-aware bicycle rollout |
+| Baseline 1 | direct_waypoints_egohistory | 400 | direct waypoint prediction |
+| Baseline 2 | language_actions_bicycle | 400 | language actions plus plain bicycle rollout |
 
 The final geometry-aware submission artifact is:
 
