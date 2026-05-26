@@ -161,13 +161,13 @@ The final output is a 25-point local ego-frame trajectory.
 
 ## Results
 
-KITScenes leaderboard results for the Rangers submissions:
+KITScenes leaderboard results:
 
-| Method | Team | MMS | MMS selected | MMS heavy rain | MMS construction | MMS overtake | MMS intersection | MMS night time | MMS snow | L2 mean | L2 median | S. Coherence |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Gemma 4 vanilla model | Rangers | 3.98 | 4.15 | 4.42 | 3.96 | 3.82 | 3.61 | 4.34 | 3.57 | 5.82 | 4.11 | 0.00 |
-| Kinematic | Rangers | 4.18 | 4.03 | 4.50 | 4.36 | 3.91 | 4.25 | 4.68 | 3.54 | 4.08 | 3.32 | 0.83 |
-| Kinematics V2 / KITE | Rangers | 4.31 | 4.18 | 4.39 | 4.45 | 4.23 | 4.21 | 4.75 | 3.95 | 3.57 | 2.87 | 0.84 |
+| Method | MMS | MMS selected | MMS heavy rain | MMS construction | MMS overtake | MMS intersection | MMS night time | MMS snow | L2 mean | L2 median | S. Coherence |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Kinematics V2 / KITE | 4.31 | 4.18 | 4.39 | 4.45 | 4.23 | 4.21 | 4.75 | 3.95 | 3.57 | 2.87 | 0.84 |
+| Kinematic | 4.18 | 4.03 | 4.50 | 4.36 | 3.91 | 4.25 | 4.68 | 3.54 | 4.08 | 3.32 | 0.83 |
+| Gemma 4 vanilla model | 3.98 | 4.15 | 4.42 | 3.96 | 3.82 | 3.61 | 4.34 | 3.57 | 5.82 | 4.11 | 0.00 |
 
 KITE improves the overall MMS from `3.98` to `4.31`, lowers mean L2 from `5.82` to `3.57`, lowers median L2 from `4.11` to `2.87`, and raises scene coherence from `0.00` to `0.84` compared with the vanilla Gemma 4 waypoint-style baseline.
 
