@@ -2,14 +2,6 @@
 
 KITE is a KITScenes trajectory-prediction method that asks Gemma for interpretable driving intent and road geometry, then converts that language into physical waypoints with a bicycle model.
 
-The main method is:
-
-```text
-geometry_actions_bicycle
-```
-
-The other two implemented methods are baselines used to understand where the gain comes from.
-
 ## Method Summary
 
 Directly asking a vision-language model for numeric waypoints is possible, but raw coordinates are brittle. KITE instead asks Gemma for structured, human-readable driving semantics:
