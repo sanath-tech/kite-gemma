@@ -32,9 +32,9 @@ R_FRONT = np.array(
 T_FRONT = np.array([-0.0183397, -0.18646863, -0.20817565], dtype=np.float64)
 
 METHODS = (
-    ("direct_egohistory", "Direct waypoints + ego history", "cyan"),
-    ("language_bicycle", "Language actions + bicycle", "orange"),
-    ("geometry_bicycle", "Geometry actions + bicycle", "crimson"),
+    ("direct_egohistory", "Gemma 4 vanilla model", "cyan"),
+    ("language_bicycle", "Kinematic", "orange"),
+    ("geometry_bicycle", "Kinematics V2 / KITE", "crimson"),
 )
 CAMERAS = (
     ("frames_camera_front_left", "front left"),
@@ -230,9 +230,9 @@ def plot_one(
 
     text_blocks = [
         f"sample={sample_idx:06d} scenario={scenario_id} instruction={instruction}",
-        wrap_block("Direct waypoints + ego history", direct_text(method_results["direct_egohistory"])),
-        wrap_block("Language actions + bicycle", english_summary(method_results["language_bicycle"])),
-        wrap_block("Geometry actions + bicycle", english_summary(method_results["geometry_bicycle"])),
+        wrap_block("Gemma 4 vanilla model", direct_text(method_results["direct_egohistory"])),
+        wrap_block("Kinematic", english_summary(method_results["language_bicycle"])),
+        wrap_block("Kinematics V2 / KITE", english_summary(method_results["geometry_bicycle"])),
     ]
     ax_text.axis("off")
     ax_text.text(

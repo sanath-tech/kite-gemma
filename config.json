@@ -1,23 +1,25 @@
 {
   "main_method": "geometry_actions_bicycle",
   "baseline_methods": [
-    "direct_waypoints_egohistory",
-    "language_actions_bicycle"
+    "language_actions_bicycle",
+    "direct_waypoints_egohistory"
   ],
   "default_experiment": "geometry_actions_bicycle",
   "experiments": {
-    "direct_waypoints_egohistory": {
-      "role": "baseline",
-      "description": "Gemma sees front3 last4 images plus full ego history and directly predicts 25 future xy waypoints.",
-      "prompt_mode": "direct_waypoints",
-      "motion_context": false,
-      "ego_history": true,
-      "rollout": "direct",
-      "max_new_tokens": 1200,
-      "output_name": "kitscenes_test_kite_direct_waypoints_egohistory"
+    "geometry_actions_bicycle": {
+      "role": "main_method",
+      "display_name": "Kinematics V2 / KITE",
+      "description": "Gemma sees front3 last4 images plus Savitzky-Golay speed/heading, outputs lane geometry plus language actions, then a geometry-aware bicycle rollout creates waypoints.",
+      "prompt_mode": "geometry_reasoning",
+      "motion_context": true,
+      "ego_history": false,
+      "rollout": "geometry_aware_bicycle",
+      "max_new_tokens": 600,
+      "output_name": "kitscenes_test_kite_geometry_actions_bicycle"
     },
     "language_actions_bicycle": {
       "role": "baseline",
+      "display_name": "Kinematic",
       "description": "Gemma sees front3 last4 images plus Savitzky-Golay speed/heading, outputs language acceleration/steering actions, then a plain bicycle rollout creates waypoints.",
       "prompt_mode": "reasoning",
       "motion_context": true,
@@ -26,15 +28,16 @@
       "max_new_tokens": 450,
       "output_name": "kitscenes_test_kite_language_actions_bicycle"
     },
-    "geometry_actions_bicycle": {
-      "role": "main_method",
-      "description": "Gemma sees front3 last4 images plus Savitzky-Golay speed/heading, outputs lane geometry plus language actions, then a geometry-aware bicycle rollout creates waypoints.",
-      "prompt_mode": "geometry_reasoning",
-      "motion_context": true,
-      "ego_history": false,
-      "rollout": "geometry_aware_bicycle",
-      "max_new_tokens": 600,
-      "output_name": "kitscenes_test_kite_geometry_actions_bicycle"
+    "direct_waypoints_egohistory": {
+      "role": "baseline",
+      "display_name": "Gemma 4 vanilla model",
+      "description": "Gemma sees front3 last4 images plus full ego history and directly predicts 25 future xy waypoints.",
+      "prompt_mode": "direct_waypoints",
+      "motion_context": false,
+      "ego_history": true,
+      "rollout": "direct",
+      "max_new_tokens": 1200,
+      "output_name": "kitscenes_test_kite_direct_waypoints_egohistory"
     }
   }
 }

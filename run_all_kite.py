@@ -74,7 +74,9 @@ def main() -> None:
             cmd.extend(["--max-new-tokens", str(args.max_new_tokens)])
 
         print("=" * 72, flush=True)
-        print(f"Running KITE method: {experiment_name}", flush=True)
+        config = json.loads(args.config.read_text())
+        display_name = config["experiments"][experiment_name].get("display_name", experiment_name)
+        print(f"Running KITE method: {display_name} ({experiment_name})", flush=True)
         print("=" * 72, flush=True)
         subprocess.run(cmd, check=True)
 

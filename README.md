@@ -42,15 +42,15 @@ KITE improves the overall MMS from `3.98` to `4.31`, lowers mean L2 from `5.82` 
 
 ## Main Method And Baselines
 
-| Role | Method | Gemma output | Rollout |
-| --- | --- | --- | --- |
-| Main KITE method | `geometry_actions_bicycle` | driving actions plus lane geometry | geometry-aware bicycle model |
-| Baseline 1 | `direct_waypoints_egohistory` | 25 future waypoints | none |
-| Baseline 2 | `language_actions_bicycle` | driving actions only | plain bicycle model |
+| Role | Method | Internal key | Gemma output | Rollout |
+| --- | --- | --- | --- | --- |
+| Main KITE method | Kinematics V2 / KITE | `geometry_actions_bicycle` | driving actions plus lane geometry | geometry-aware bicycle model |
+| Baseline 1 | Kinematic | `language_actions_bicycle` | driving actions only | plain bicycle model |
+| Baseline 2 | Gemma 4 vanilla model | `direct_waypoints_egohistory` | 25 future waypoints | none |
 
-### Main Method: `geometry_actions_bicycle`
+### Main Method: Kinematics V2 / KITE
 
-This is the recommended KITE method and the one with the best result in this repo. Gemma receives front-camera image history, the route instruction, and current speed/heading from a Savitzky-Golay filter. It predicts both driving actions and lane geometry.
+Kinematics V2 / KITE is the recommended method and the one with the best result in this repo. Gemma receives front-camera image history, the route instruction, and current speed/heading from a Savitzky-Golay filter. It predicts both driving actions and lane geometry.
 
 Gemma returns JSON with an `english` object:
 
@@ -73,17 +73,17 @@ Gemma returns JSON with an `english` object:
 
 The geometry fields are important because `steer straight` means follow the current lane or drivable corridor, not zero wheel angle. If the road curves, the geometry-aware rollout can still curve while the language action remains `steer straight`.
 
-### Baseline 1: `direct_waypoints_egohistory`
+### Baseline 1: Kinematic
 
-Gemma receives front-camera image history, the route instruction, and the full past ego trajectory as text. It directly predicts 25 future `(x, y)` waypoints.
-
-No kinematic model is used. The parsed waypoints are written directly to the submission file.
-
-### Baseline 2: `language_actions_bicycle`
-
-Gemma receives front-camera image history, the route instruction, and current speed/heading from a Savitzky-Golay filter. It predicts acceleration and steering language for two time windows: the first 3 seconds and the last 2 seconds.
+Kinematic gives Gemma front-camera image history, the route instruction, and current speed/heading from a Savitzky-Golay filter. Gemma predicts acceleration and steering language for two time windows: the first 3 seconds and the last 2 seconds.
 
 A plain bicycle model converts those labels into 25 future waypoints. This baseline tests whether language actions alone help before adding lane geometry.
+
+### Baseline 2: Gemma 4 vanilla model
+
+Gemma 4 vanilla model receives front-camera image history, the route instruction, and the full past ego trajectory as text. It directly predicts 25 future `(x, y)` waypoints.
+
+No kinematic model is used. The parsed waypoints are written directly to the submission file.
 
 ## Language To Physical Values
 
@@ -167,11 +167,11 @@ The final output is a 25-point local ego-frame trajectory.
 
 The local KITE run completed all 400 KITScenes test samples for the main method and both baselines.
 
-| Role | Method | Rows | Output |
-| --- | --- | ---: | --- |
-| Main KITE method | `geometry_actions_bicycle` | 400 | geometry-aware bicycle rollout |
-| Baseline 1 | `direct_waypoints_egohistory` | 400 | direct waypoint prediction |
-| Baseline 2 | `language_actions_bicycle` | 400 | language actions plus plain bicycle rollout |
+| Role | Method | Internal key | Rows | Output |
+| --- | --- | --- | ---: | --- |
+| Main KITE method | Kinematics V2 / KITE | `geometry_actions_bicycle` | 400 | geometry-aware bicycle rollout |
+| Baseline 1 | Kinematic | `language_actions_bicycle` | 400 | language actions plus plain bicycle rollout |
+| Baseline 2 | Gemma 4 vanilla model | `direct_waypoints_egohistory` | 400 | direct waypoint prediction |
 
 The final geometry-aware submission artifact is:
 
@@ -193,7 +193,7 @@ List available methods:
 python3 run_kite.py --list-experiments
 ```
 
-Run the main KITE method:
+Run Kinematics V2 / KITE:
 
 ```bash
 python3 run_kite.py \
@@ -205,7 +205,7 @@ python3 run_kite.py \
   --limit 400
 ```
 
-Run the main method followed by both baselines:
+Run Kinematics V2 / KITE followed by Kinematic and Gemma 4 vanilla model:
 
 ```bash
 python3 run_all_kite.py \
@@ -216,12 +216,12 @@ python3 run_all_kite.py \
   --limit 400
 ```
 
-Run only selected baselines:
+Run only Kinematic and Gemma 4 vanilla model:
 
 ```bash
 python3 run_all_kite.py \
   --config config.json \
-  --experiments direct_waypoints_egohistory language_actions_bicycle \
+  --experiments language_actions_bicycle direct_waypoints_egohistory \
   --model-root /path/to/gemma-4-31B-it \
   --parquet /path/to/kitscenes-data/data/test-00000-of-00001.parquet \
   --output-root outputs/kite \
@@ -253,7 +253,7 @@ python3 plot_three_method_camera_trajectories.py \
   --limit 25
 ```
 
-The plot script overlays the direct waypoint baseline, language-action baseline, and main KITE geometry-aware trajectory. It also writes the driving instruction and Gemma language output into the figure.
+The plot script overlays Gemma 4 vanilla model, Kinematic, and Kinematics V2 / KITE. It also writes the driving instruction and Gemma language output into the figure.
 
 ## Method Note
 

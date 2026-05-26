@@ -32,21 +32,21 @@ The numeric trajectory is then produced by deterministic kinematics. This separa
 
 KITE includes one main method and two baselines.
 
-1. Main KITE method: geometry actions with bicycle rollout
+1. Main KITE method: Kinematics V2 / KITE
 
    This is the recommended method and the one with the best result in this repo. Gemma predicts both driving actions and lane geometry. The geometry is converted into a small lane-following steering bias, so "steer straight" can still follow a curved road.
 
-2. Baseline 1: direct waypoints with ego history
-
-   Gemma receives front-camera image history, the route instruction, and the past ego trajectory as text. It directly predicts 25 future x-y waypoints. No kinematic model is used.
-
-3. Baseline 2: language actions with bicycle rollout
+2. Baseline 1: Kinematic
 
    Gemma receives front-camera image history, the route instruction, and current speed and heading from a Savitzky-Golay filter. It predicts acceleration and steering language for two time windows: the first 3 seconds and the last 2 seconds. A plain bicycle model converts those labels into waypoints.
 
-## Gemma Output For The Recommended Method
+3. Baseline 2: Gemma 4 vanilla model
 
-The geometry-aware method asks Gemma to return JSON with an `english` object:
+   Gemma receives front-camera image history, the route instruction, and the past ego trajectory as text. It directly predicts 25 future x-y waypoints. No kinematic model is used.
+
+## Gemma Output For Kinematics V2 / KITE
+
+Kinematics V2 / KITE asks Gemma to return JSON with an `english` object:
 
 ```json
 {
@@ -93,7 +93,7 @@ The low-speed table is used up to 60 km/h. The high-speed table is used above 60
 
 ## Geometry Steering Bias
 
-For the geometry-aware method, KITE also converts lane geometry into a steering bias:
+For Kinematics V2 / KITE, lane geometry is converted into a steering bias:
 
 ```text
 lane_direction + lane_curvature_strength + trajectory_shape -> delta_lane_bias
@@ -149,11 +149,11 @@ The final output is a 25-point local ego-frame trajectory.
 
 The local KITE run completed all 400 KITScenes test samples for the main method and both baselines.
 
-| Role | Method | Rows | Output |
-| --- | --- | ---: | --- |
-| Main KITE method | geometry_actions_bicycle | 400 | KITE geometry-aware bicycle rollout |
-| Baseline 1 | direct_waypoints_egohistory | 400 | direct waypoint prediction |
-| Baseline 2 | language_actions_bicycle | 400 | language actions plus plain bicycle rollout |
+| Role | Method | Internal key | Rows | Output |
+| --- | --- | --- | ---: | --- |
+| Main KITE method | Kinematics V2 / KITE | geometry_actions_bicycle | 400 | KITE geometry-aware bicycle rollout |
+| Baseline 1 | Kinematic | language_actions_bicycle | 400 | language actions plus plain bicycle rollout |
+| Baseline 2 | Gemma 4 vanilla model | direct_waypoints_egohistory | 400 | direct waypoint prediction |
 
 The final geometry-aware submission artifact is:
 

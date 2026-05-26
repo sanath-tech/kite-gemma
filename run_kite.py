@@ -90,23 +90,25 @@ GEOMETRY_REASONING_KEYS = (
 DEFAULT_CONFIG: dict[str, Any] = {
     "main_method": "geometry_actions_bicycle",
     "baseline_methods": [
-        "direct_waypoints_egohistory",
         "language_actions_bicycle",
+        "direct_waypoints_egohistory",
     ],
     "default_experiment": "geometry_actions_bicycle",
     "experiments": {
-        "direct_waypoints_egohistory": {
-            "role": "baseline",
-            "description": "Gemma sees front3 last4 images plus full ego history and directly predicts 25 future xy waypoints.",
-            "prompt_mode": "direct_waypoints",
-            "motion_context": False,
-            "ego_history": True,
-            "rollout": "direct",
-            "max_new_tokens": 1200,
-            "output_name": "kitscenes_test_kite_direct_waypoints_egohistory",
+        "geometry_actions_bicycle": {
+            "role": "main_method",
+            "display_name": "Kinematics V2 / KITE",
+            "description": "Gemma sees front3 last4 images plus Savitzky-Golay speed/heading, outputs lane geometry plus language actions, then a geometry-aware bicycle rollout creates waypoints.",
+            "prompt_mode": "geometry_reasoning",
+            "motion_context": True,
+            "ego_history": False,
+            "rollout": "geometry_aware_bicycle",
+            "max_new_tokens": 600,
+            "output_name": "kitscenes_test_kite_geometry_actions_bicycle",
         },
         "language_actions_bicycle": {
             "role": "baseline",
+            "display_name": "Kinematic",
             "description": "Gemma sees front3 last4 images plus Savitzky-Golay speed/heading, outputs language acceleration/steering actions, then a plain bicycle rollout creates waypoints.",
             "prompt_mode": "reasoning",
             "motion_context": True,
@@ -115,15 +117,16 @@ DEFAULT_CONFIG: dict[str, Any] = {
             "max_new_tokens": 450,
             "output_name": "kitscenes_test_kite_language_actions_bicycle",
         },
-        "geometry_actions_bicycle": {
-            "role": "main_method",
-            "description": "Gemma sees front3 last4 images plus Savitzky-Golay speed/heading, outputs lane geometry plus language actions, then a geometry-aware bicycle rollout creates waypoints.",
-            "prompt_mode": "geometry_reasoning",
-            "motion_context": True,
-            "ego_history": False,
-            "rollout": "geometry_aware_bicycle",
-            "max_new_tokens": 600,
-            "output_name": "kitscenes_test_kite_geometry_actions_bicycle",
+        "direct_waypoints_egohistory": {
+            "role": "baseline",
+            "display_name": "Gemma 4 vanilla model",
+            "description": "Gemma sees front3 last4 images plus full ego history and directly predicts 25 future xy waypoints.",
+            "prompt_mode": "direct_waypoints",
+            "motion_context": False,
+            "ego_history": True,
+            "rollout": "direct",
+            "max_new_tokens": 1200,
+            "output_name": "kitscenes_test_kite_direct_waypoints_egohistory",
         },
     },
 }
@@ -547,7 +550,8 @@ def main() -> None:
         for name, item in full_config["experiments"].items():
             default_marker = " (default)" if name == full_config.get("default_experiment") else ""
             role = item.get("role", "method")
-            print(f"{name}{default_marker} [{role}]: {item.get('description', '')}")
+            display_name = item.get("display_name", name)
+            print(f"{display_name}{default_marker} [{role}] ({name}): {item.get('description', '')}")
         return
     if args.model_root is None:
         raise ValueError("--model-root is required unless --list-experiments is used")
@@ -577,6 +581,7 @@ def main() -> None:
     )
 
     print(f"selected_experiment={experiment_name}", flush=True)
+    print(f"display_name={experiment.get('display_name', experiment_name)}", flush=True)
     print(f"description={experiment.get('description')}", flush=True)
     print(f"output_dir={output_dir}", flush=True)
     print(f"submission={submission}", flush=True)
